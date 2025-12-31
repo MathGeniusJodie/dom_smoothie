@@ -166,7 +166,10 @@ pub(crate) fn pre_filter_document(doc: &Document, metadata: &mut Metadata) {
     // on a certain element which is going to be removed in the next iteration.
     let body_sel = doc.select_single("body");
     // html5ever always puts body element, even if it wasn't in the document's contents
-    let body_node = body_sel.nodes().first().unwrap();
+    let body_node = match body_sel.nodes().first() {
+        Some(n) => n,
+        None => return,
+    };
     let mut should_remove_title_header = !metadata.title.is_empty();
     let mut next_node = next_child_or_sibling(body_node, false);
     while let Some(node) = next_node {
